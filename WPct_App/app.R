@@ -14,6 +14,8 @@ ui <- fluidPage(
     column(4, checkboxGroupInput(inputId = "Team_Name3", label = "Team", choices = name_abb$name[{2*round(length(name_abb$name)/3)+1}:{round(length(name_abb$name))}]))
   ),
   
+  fluidRow(h4(print("Use the checkboxes above to select which teams you would like to view.  Data will appear in the left most plot below. You can click and box data to explore further. A histogram of game run differential will appear on the right hand plot based on the team seasons boxed on the left hand plot"))),
+  
   #Make win% error jitter plot on the left of the row. On the right, histogram of run differential in seasons that are boxed by user on the jitter plot
   fluidRow(
     column(6, plotOutput("Jitter_plot", click = "Pclick", brush = "Bclick")),
@@ -61,9 +63,9 @@ server <- function(input, output) {
   output$Jitter_plot <- renderPlot({
     
     {data() %>% ggplot(aes(jit,PctError)) + 
-    #geom_rect(fill = "red", xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = 0, alpha = 0.01) + geom_rect(fill = "green", xmin = -Inf, xmax = Inf, ymin = 0, ymax = Inf, alpha = 0.01) + 
-    geom_boxplot() + geom_point(aes(color = name)) + 
-    scale_x_continuous(name = "", limits = c(-.5,1.5)) + scale_y_continuous(name = "Actual Win Percentage - Expected Win Percentage")}
+        #geom_rect(fill = "red", xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = 0, alpha = 0.01) + geom_rect(fill = "green", xmin = -Inf, xmax = Inf, ymin = 0, ymax = Inf, alpha = 0.01) + 
+        geom_boxplot() + geom_point(aes(color = name)) + 
+        scale_x_continuous(name = "", limits = c(-.5,1.5)) + scale_y_continuous(name = "Actual Win Percentage - Expected Win Percentage")}
   })
   
   #Choose row from season level data table based on user click on plot
@@ -85,7 +87,7 @@ server <- function(input, output) {
   
   #histogram of run differential in seasons that are boxed by user on the jitter plot
   output$Hist <- renderPlot({
-    data2() %>% ggplot(aes(RDiff)) + geom_histogram(aes(fill = Team), binwidth = 1)
+    data2() %>% ggplot(aes(RDiff)) + geom_histogram(aes(fill = Team), binwidth = 1) + scale_x_continuous(limits = c(-22,22))
   })
 }
 
